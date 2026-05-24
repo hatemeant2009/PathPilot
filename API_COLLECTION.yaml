@@ -1,0 +1,119 @@
+version: 1.0
+name: PathPilot
+summary: Personal growth guidance platform for students and young professionals
+
+environments:
+  development:
+    url: http://localhost:5000/api
+    description: Local development environment
+  production:
+    url: https://api.pathpilot.com/api
+    description: Production environment
+
+variables:
+  token: "{{bearerToken}}"
+  userId: "{{userId}}"
+  baseUrl: "{{baseUrl}}"
+
+requests:
+  - name: Auth
+    request:
+      - name: Signup
+        method: POST
+        url: "{{baseUrl}}/auth/signup"
+        body:
+          email: "user@example.com"
+          password: "password123"
+          firstName: "John"
+          lastName: "Doe"
+
+      - name: Login
+        method: POST
+        url: "{{baseUrl}}/auth/login"
+        body:
+          email: "user@example.com"
+          password: "password123"
+
+      - name: Verify Token
+        method: POST
+        url: "{{baseUrl}}/auth/verify"
+        headers:
+          Authorization: "Bearer {{token}}"
+
+  - name: Quiz
+    request:
+      - name: Get Questions
+        method: GET
+        url: "{{baseUrl}}/quiz/questions"
+        headers:
+          Authorization: "Bearer {{token}}"
+
+      - name: Submit Quiz
+        method: POST
+        url: "{{baseUrl}}/quiz/submit"
+        headers:
+          Authorization: "Bearer {{token}}"
+        body:
+          userId: "{{userId}}"
+          answers: ["Technology", "Get a job", "Beginner", "10-20 hours", "Videos", "19-22", "Solo", "Some", "Skills", "Not knowing where to start"]
+
+  - name: Dashboard
+    request:
+      - name: Get Dashboard
+        method: GET
+        url: "{{baseUrl}}/dashboard/{{userId}}"
+        headers:
+          Authorization: "Bearer {{token}}"
+
+      - name: Get Tasks
+        method: GET
+        url: "{{baseUrl}}/dashboard/{{userId}}/tasks"
+        headers:
+          Authorization: "Bearer {{token}}"
+
+      - name: Get Progress
+        method: GET
+        url: "{{baseUrl}}/dashboard/{{userId}}/progress"
+        headers:
+          Authorization: "Bearer {{token}}"
+
+  - name: Recommendations
+    request:
+      - name: Get Recommendations
+        method: GET
+        url: "{{baseUrl}}/recommendations/{{userId}}"
+        headers:
+          Authorization: "Bearer {{token}}"
+
+      - name: Get Career Paths
+        method: GET
+        url: "{{baseUrl}}/recommendations/{{userId}}/career-paths"
+        headers:
+          Authorization: "Bearer {{token}}"
+
+      - name: Get Skills
+        method: GET
+        url: "{{baseUrl}}/recommendations/{{userId}}/skills"
+        headers:
+          Authorization: "Bearer {{token}}"
+
+  - name: Subscription
+    request:
+      - name: Get Plans
+        method: GET
+        url: "{{baseUrl}}/subscription/plans"
+
+      - name: Get Subscription Status
+        method: GET
+        url: "{{baseUrl}}/subscription/status/{{userId}}"
+        headers:
+          Authorization: "Bearer {{token}}"
+
+      - name: Upgrade Plan
+        method: POST
+        url: "{{baseUrl}}/subscription/upgrade"
+        headers:
+          Authorization: "Bearer {{token}}"
+        body:
+          userId: "{{userId}}"
+          planName: "Pro"
